@@ -5,6 +5,7 @@ public class FieldOfView {
 	private int depth;
 	
 	private boolean[][] visible;
+	
 	public boolean isVisible(int x, int y, int z){
 		return z == depth && x >= 0 && y >= 0 && x < visible.length && y < visible[0].length && visible[x][y];
 	}
@@ -35,7 +36,7 @@ public class FieldOfView {
 		for (int x = -r; x < r; x++){
 			for (int y = -r; y < r; y++){
 				
-				if (isPointInRadius(x,y,r) || isPointInWorld(x,wx,y,wy,r))
+				if (isPointNotInRadius(x,y,r) || isPointNotInWorld(x,wx,y,wy))
 					continue;
 				
 				for (Point p : new Line(wx, wy, wx + x, wy + y)){
@@ -50,12 +51,22 @@ public class FieldOfView {
 		}
 	}
 	
-	public boolean isPointInRadius(int x, int y, int r)
+	/**These could be static one day since they can be pretty much used anywhere.  
+	 * Maybe add them to some library with essential functions*/
+	
+	//Is this point not inside a circle with radius r starting from the origin
+	public boolean isPointNotInRadius(int x, int y, int r)
 	{
 		return x*x + y*y > r*r ? true : false;
 	}
 	
-	public boolean isPointInWorld(int x, int wx, int y, int wy, int r)
+	/**Is this point not inside the bounds of the game world?
+	 * @param x - X coordinate of point to be checked
+	 * @param wx - X coordinate of world point reference
+	 * @param y - Y coordinate of point to be checked
+	 * @param wy - Y coordinate of world point reference
+	 */
+	public boolean isPointNotInWorld(int x, int wx, int y, int wy)
 	{
 		return wx + x < 0 || wx + x >= world.width() || wy + y < 0 || wy + y >= world.height() ? true : false;
 	}
